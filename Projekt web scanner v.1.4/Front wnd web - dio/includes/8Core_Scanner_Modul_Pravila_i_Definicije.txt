@@ -1,0 +1,177 @@
+8Core Scanner
+
+Modul: Pravila i definicije
+
+Cilj
+
+Napraviti administrativno sučelje za upravljanje pravilima (Rules).
+
+NE DIRATI:
+
+-   scanner engine
+-   bash skripte
+-   backend logiku
+-   autentifikaciju
+-   worker
+-   postojeću logiku skeniranja
+
+Radi se isključivo UX, CRUD i administracija pravila.
+
+------------------------------------------------------------------------
+
+Dodati novu stavku u izbornik
+
+-   Dashboard
+-   Nalazi
+-   Povijest
+-   Skeniranja
+-   Korisnici
+-   Pravila i definicije
+-   Ignore lista
+-   Postavke
+
+------------------------------------------------------------------------
+
+Stranica “Pravila i definicije”
+
+Na vrhu:
+
+-   -   Novo pravilo
+-   Pretraga
+-   Filter
+-   Uvoz
+-   Izvoz
+
+------------------------------------------------------------------------
+
+Popis pravila
+
+Stupci:
+
+-   Aktivno
+-   Naziv
+-   Tip
+-   Rizik
+-   Uzorak
+-   Ekstenzije
+-   Datum izrade
+-   Akcije
+
+Akcije:
+
+-   Uredi
+-   Kopiraj
+-   Onemogući
+-   Obriši
+
+------------------------------------------------------------------------
+
+Tip pravila
+
+Dropdown:
+
+-   Naziv datoteke
+-   Putanja
+-   Regex
+-   Regex sadržaja
+-   SHA256
+-   Dozvole (chmod)
+-   Ekstenzija
+-   Veličina datoteke
+
+------------------------------------------------------------------------
+
+Rizik
+
+Dropdown:
+
+-   Critical
+-   High
+-   Medium
+-   Low
+-   Info
+
+------------------------------------------------------------------------
+
+Forma za uređivanje
+
+Polja:
+
+-   Naziv pravila
+-   Opis
+-   Tip pravila
+-   Uzorak
+-   Ekstenzije
+-   Rizik
+-   Aktivno
+-   Napomena
+
+------------------------------------------------------------------------
+
+Primjeri
+
+Naziv datoteke: filefuns.php
+
+Regex: .sys-.*
+
+Putanja: /tmp/.php
+
+Regex sadržaja: shell_exec|passthru|proc_open
+
+Ekstenzije: PHP Php pHP
+
+SHA256: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+Dozvole: 777
+
+------------------------------------------------------------------------
+
+Ignore lista
+
+Posebna stranica:
+
+-   Ignorirane datoteke
+-   Ignorirane putanje
+-   Ignorirani hash
+-   Ignorirani korisnici
+
+------------------------------------------------------------------------
+
+Dizajn
+
+-   Koristiti isti izgled kao ostatak Scannera.
+-   Bez inline CSS-a.
+-   Bez inline JavaScripta.
+-   Koristiti postojeći assets/css i assets/js.
+-   Responsive.
+-   Profesionalan izgled (Plesk / Proxmox / UniFi stil).
+
+------------------------------------------------------------------------
+
+VAŽNO
+
+Ovaj modul:
+
+-   ne izvršava pravila
+-   ne pokreće scanner
+-   ne poziva bash skripte
+-   ne izvršava root naredbe
+
+Služi isključivo za administraciju pravila.
+
+Scanner Engine će kasnije čitati ova pravila iz baze.
+
+------------------------------------------------------------------------
+
+Budući razvoj
+
+Pravila moraju biti zamišljena kao plugin sustav.
+
+Scanner Engine će dinamički učitavati pravila iz baze.
+
+Dodavanje novog IOC pravila u budućnosti ne smije zahtijevati izmjenu
+bash skripte ili PHP koda, već samo dodavanje novog zapisa kroz
+administracijsko sučelje.
+
+Cilj je da administrator može dodavati nova pravila bez intervencije u
+izvorni kod.
