@@ -18,4 +18,9 @@ return [
     // CHANGE PASSWORD AFTER FIRST LOGIN.
     'default_admin_user' => 'admin',
     'default_admin_pass' => '8CoreScanner2026!',
+
+    // Putanje skripti na serveru (u /root/ van web roota)
+    'scan_script' => '/root/ioc_scan.sh',
+    'scan_log'    => '/root/ioc-scan-live.log',
+    'scan_debug'  => '/root/ioc-debug.log',
 ];

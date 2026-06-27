@@ -11,9 +11,9 @@ require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/helpers.php';
 require_admin();
 
-// Putanja do skripte — relativno od scan.php prema gore u Skripte folder
-define('SCAN_SCRIPT', realpath(__DIR__ . '/../Skripte van weba _ root/ioc_scan.sh') ?: __DIR__ . '/../Skripte van weba _ root/ioc_scan.sh');
-define('SCAN_LOG',    realpath(__DIR__ . '/../Skripte van weba _ root/ioc-scan-live.log') ?: __DIR__ . '/../Skripte van weba _ root/ioc-scan-live.log');
+$config = require __DIR__ . '/includes/config.php';
+define('SCAN_SCRIPT', $config['scan_script'] ?? '/root/ioc_scan.sh');
+define('SCAN_LOG',    $config['scan_log']    ?? '/root/ioc-scan-live.log');
 
 $status  = '';
 $isError = false;
