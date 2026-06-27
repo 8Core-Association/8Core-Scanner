@@ -12,16 +12,17 @@ require __DIR__ . '/../includes/helpers.php';
 require_admin();
 
 $message = '';
+$messageType = 'ok';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = isset($_POST['form_action']) ? $_POST['form_action'] : '';
+    $formAction = $_POST['form_action'] ?? '';
 
-    if ($action === 'create') {
+    if ($formAction === 'create') {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
-        $role = $_POST['role'] ?? 'user';
-        $account = trim($_POST['account_name'] ?? '');
-        $active = isset($_POST['active']) ? 1 : 0;
+        $role     = $_POST['role'] ?? 'user';
+        $active   = isset($_POST['active']) ? 1 : 0;
+        $selectedAccounts = isset($_POST['accounts']) && is_array($_POST['accounts']) ? $_POST['accounts'] : [];
 
         if ($username !== '' && $password !== '' && in_array($role, ['admin','user'], true)) {
             $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -29,21 +30,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 INSERT INTO scanner_users (username, password_hash, role, account_name, active, created_at)
                 VALUES (?, ?, ?, ?, ?, NOW())
             ");
-            $stmt->execute([$username, $hash, $role, $account !== '' ? $account : null, $active]);
-            $message = 'Korisnik kreiran.';
+            $firstAccount = !empty($selectedAccounts) ? $selectedAccounts[0] : null;
+            $stmt->execute([$username, $hash, $role, $firstAccount, $active]);
+            $newId = (int)$pdo->lastInsertId();
+
+            foreach ($selectedAccounts as $acc) {
+                $acc = trim($acc);
+                if ($acc === '') continue;
+                $ins = $pdo->prepare("INSERT IGNORE INTO scanner_user_accounts (user_id, account_name) VALUES (?, ?)");
+                $ins->execute([$newId, $acc]);
+            }
+
+            $message = "Korisnik \"$username\" kreiran.";
         } else {
             $message = 'Nedostaje username/password ili role nije ispravan.';
+            $messageType = 'error';
         }
     }
 
-    if ($action === 'toggle') {
+    if ($formAction === 'accounts') {
+        $id = (int)($_POST['id'] ?? 0);
+        $selectedAccounts = isset($_POST['accounts']) && is_array($_POST['accounts']) ? $_POST['accounts'] : [];
+
+        if ($id > 0) {
+            $pdo->prepare("DELETE FROM scanner_user_accounts WHERE user_id = ?")->execute([$id]);
+            $firstAccount = null;
+            foreach ($selectedAccounts as $acc) {
+                $acc = trim($acc);
+                if ($acc === '') continue;
+                $ins = $pdo->prepare("INSERT IGNORE INTO scanner_user_accounts (user_id, account_name) VALUES (?, ?)");
+                $ins->execute([$id, $acc]);
+                if ($firstAccount === null) $firstAccount = $acc;
+            }
+            $pdo->prepare("UPDATE scanner_users SET account_name = ? WHERE id = ?")->execute([$firstAccount, $id]);
+            $message = 'Accounti ažurirani.';
+        }
+    }
+
+    if ($formAction === 'toggle') {
         $id = (int)($_POST['id'] ?? 0);
         $pdo->prepare("UPDATE scanner_users SET active = IF(active=1,0,1) WHERE id = ?")->execute([$id]);
         $message = 'Status promijenjen.';
     }
 
-    if ($action === 'password') {
-        $id = (int)($_POST['id'] ?? 0);
+    if ($formAction === 'password') {
+        $id       = (int)($_POST['id'] ?? 0);
         $password = $_POST['password'] ?? '';
         if ($id > 0 && $password !== '') {
             $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -54,20 +85,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $users = $pdo->query("SELECT * FROM scanner_users ORDER BY id ASC")->fetchAll();
-$accounts = $pdo->query("
+
+// Accounti dostupni iz findings
+$availableAccounts = $pdo->query("
     SELECT DISTINCT account_name
     FROM findings
     WHERE account_name IS NOT NULL AND account_name != ''
     ORDER BY account_name
 ")->fetchAll(PDO::FETCH_COLUMN);
+
+// Accounti po korisniku
+$userAccountsMap = [];
+$rows = $pdo->query("SELECT user_id, account_name FROM scanner_user_accounts ORDER BY account_name")->fetchAll();
+foreach ($rows as $r) {
+    $userAccountsMap[$r['user_id']][] = $r['account_name'];
+}
 ?>
 <!doctype html>
 <html lang="hr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>8Core Scanner – Users</title>
+<title>8Core Scanner – Korisnici</title>
 <link rel="stylesheet" href="../assets/css/scanner.css">
+<style>
+.accounts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+.account-check {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+}
+.account-check input { margin: 0; cursor: pointer; }
+.account-check:has(input:checked) {
+    background: var(--accent-dim, rgba(0,100,255,.12));
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+}
+.edit-accounts-panel {
+    display: none;
+    margin-top: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+}
+.edit-accounts-panel.open { display: block; }
+.user-accounts-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+.user-accounts-pill {
+    background: var(--accent-dim, rgba(0,100,255,.1));
+    color: var(--accent);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 600;
+}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -81,18 +166,23 @@ $accounts = $pdo->query("
       </div>
       <span class="logo-text">8Core Scanner</span>
     </div>
-    <div class="logo-version">IOC Scanner v3</div>
+    <div class="logo-version">Admin Panel</div>
   </div>
 
   <nav class="sidebar-nav">
-    <div class="sidebar-section-label">Menu</div>
-    <a class="sidebar-link" href="../index.php">
+    <div class="sidebar-section-label">Admin</div>
+    <a class="sidebar-link" href="index.php">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
+      Pregled
     </a>
     <a class="sidebar-link active" href="users.php">
       <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Users
+      Korisnici
+    </a>
+    <div class="sidebar-section-label" style="margin-top:16px;">Scanner</div>
+    <a class="sidebar-link" href="../index.php">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Otvori Scanner
     </a>
   </nav>
 
@@ -101,7 +191,7 @@ $accounts = $pdo->query("
       <div class="avatar"><?= h(mb_substr(current_user()['username'], 0, 1)) ?></div>
       <div class="user-info">
         <div class="user-name"><?= h(current_user()['username']) ?></div>
-        <div class="user-role"><?= h(current_user()['role']) ?></div>
+        <div class="user-role">admin</div>
       </div>
     </div>
   </div>
@@ -110,7 +200,7 @@ $accounts = $pdo->query("
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div class="topbar-title">Users</div>
+    <div class="topbar-title">Korisnici</div>
     <div class="topbar-meta">
       <a href="../logout.php" style="color:var(--text-muted);font-size:12px;">Odjava</a>
     </div>
@@ -119,7 +209,7 @@ $accounts = $pdo->query("
   <div class="content">
 
     <?php if ($message): ?>
-      <div class="notice ok"><?= h($message) ?></div>
+      <div class="notice <?= $messageType === 'error' ? '' : 'ok' ?>"><?= h($message) ?></div>
     <?php endif; ?>
 
     <!-- ADD USER FORM -->
@@ -127,19 +217,32 @@ $accounts = $pdo->query("
       <h2>Dodaj korisnika</h2>
       <form method="post">
         <input type="hidden" name="form_action" value="create">
-        <div class="form-row">
-          <input type="text"     name="username"     placeholder="username" required>
-          <input type="password" name="password"     placeholder="password" required>
-          <select name="role">
+        <div class="form-row" style="flex-wrap:wrap;gap:8px;">
+          <input type="text"     name="username" placeholder="username" required style="flex:1;min-width:140px;">
+          <input type="password" name="password" placeholder="password" required style="flex:1;min-width:140px;">
+          <select name="role" style="flex:0 0 auto;">
             <option value="user">user</option>
             <option value="admin">admin</option>
           </select>
-          <input type="text" name="account_name" list="accounts" placeholder="account_name">
-          <datalist id="accounts">
-            <?php foreach ($accounts as $a): ?><option value="<?= h($a) ?>"><?php endforeach; ?>
-          </datalist>
-          <label><input type="checkbox" name="active" checked> active</label>
-          <button type="submit" class="btn btn-primary">Create</button>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;">
+            <input type="checkbox" name="active" checked> active
+          </label>
+        </div>
+        <?php if (!empty($availableAccounts)): ?>
+        <div style="margin-top:12px;">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">Dodijeli accounte:</div>
+          <div class="accounts-grid">
+            <?php foreach ($availableAccounts as $acc): ?>
+              <label class="account-check">
+                <input type="checkbox" name="accounts[]" value="<?= h($acc) ?>">
+                <?= h($acc) ?>
+              </label>
+            <?php endforeach; ?>
+          </div>
+        </div>
+        <?php endif; ?>
+        <div style="margin-top:12px;">
+          <button type="submit" class="btn btn-primary">Kreiraj korisnika</button>
         </div>
       </form>
     </div>
@@ -152,20 +255,56 @@ $accounts = $pdo->query("
             <th>ID</th>
             <th>Username</th>
             <th>Role</th>
-            <th>Account</th>
+            <th>Accounti</th>
             <th>Status</th>
-            <th>Created</th>
-            <th>Last login</th>
-            <th>Actions</th>
+            <th>Zadnji login</th>
+            <th>Akcije</th>
           </tr>
         </thead>
         <tbody>
         <?php foreach ($users as $u): ?>
+        <?php $uAccounts = $userAccountsMap[(int)$u['id']] ?? []; ?>
         <tr>
           <td class="small mono"><?= (int)$u['id'] ?></td>
           <td><b><?= h($u['username']) ?></b></td>
           <td><span class="badge <?= $u['role'] === 'admin' ? 'risk-medium' : 'risk-low' ?>"><?= h($u['role']) ?></span></td>
-          <td class="small mono"><?= h($u['account_name'] ?? '—') ?></td>
+          <td>
+            <?php if (!empty($uAccounts)): ?>
+              <div class="user-accounts-pills">
+                <?php foreach ($uAccounts as $a): ?>
+                  <span class="user-accounts-pill"><?= h($a) ?></span>
+                <?php endforeach; ?>
+              </div>
+            <?php else: ?>
+              <span style="color:var(--text-muted);font-size:12px;">—</span>
+            <?php endif; ?>
+            <?php if (!empty($availableAccounts)): ?>
+            <button type="button" class="btn btn-ghost btn-sm" style="margin-top:6px;"
+                    onclick="toggleAccounts('acc-<?= (int)$u['id'] ?>')">
+              Uredi accounte
+            </button>
+            <div class="edit-accounts-panel" id="acc-<?= (int)$u['id'] ?>">
+              <form method="post">
+                <input type="hidden" name="form_action" value="accounts">
+                <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
+                <div class="accounts-grid">
+                  <?php foreach ($availableAccounts as $acc): ?>
+                    <label class="account-check">
+                      <input type="checkbox" name="accounts[]" value="<?= h($acc) ?>"
+                             <?= in_array($acc, $uAccounts, true) ? 'checked' : '' ?>>
+                      <?= h($acc) ?>
+                    </label>
+                  <?php endforeach; ?>
+                </div>
+                <div style="margin-top:10px;">
+                  <button type="submit" class="btn btn-primary btn-sm">Spremi</button>
+                  <button type="button" class="btn btn-ghost btn-sm"
+                          onclick="toggleAccounts('acc-<?= (int)$u['id'] ?>')">Odustani</button>
+                </div>
+              </form>
+            </div>
+            <?php endif; ?>
+          </td>
           <td>
             <?php if ($u['active']): ?>
               <span class="user-active">Active</span>
@@ -173,7 +312,6 @@ $accounts = $pdo->query("
               <span class="user-inactive">Inactive</span>
             <?php endif; ?>
           </td>
-          <td class="small"><?= h($u['created_at']) ?></td>
           <td class="small"><?= h($u['last_login'] ?? '—') ?></td>
           <td>
             <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
@@ -202,5 +340,12 @@ $accounts = $pdo->query("
   </div><!-- .content -->
 </div><!-- .main -->
 </div><!-- .layout -->
+
+<script>
+function toggleAccounts(id) {
+    var el = document.getElementById(id);
+    el.classList.toggle('open');
+}
+</script>
 </body>
 </html>

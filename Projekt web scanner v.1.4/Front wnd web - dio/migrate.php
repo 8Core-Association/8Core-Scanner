@@ -81,6 +81,37 @@ try {
     ");
     $messages[] = "OK: scanner_users";
 
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS scanner_user_accounts (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL,
+            account_name VARCHAR(80) NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_user_account (user_id, account_name),
+            INDEX(user_id),
+            INDEX(account_name)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+    $messages[] = "OK: scanner_user_accounts";
+
+    // Migrate existing single account_name → scanner_user_accounts
+    $migrated = 0;
+    $oldUsers = $pdo->query("SELECT id, account_name FROM scanner_users WHERE account_name IS NOT NULL AND account_name != ''")->fetchAll();
+    foreach ($oldUsers as $ou) {
+        $exists = $pdo->prepare("SELECT id FROM scanner_user_accounts WHERE user_id = ? AND account_name = ?");
+        $exists->execute([$ou['id'], $ou['account_name']]);
+        if (!$exists->fetch()) {
+            $ins = $pdo->prepare("INSERT INTO scanner_user_accounts (user_id, account_name) VALUES (?, ?)");
+            $ins->execute([$ou['id'], $ou['account_name']]);
+            $migrated++;
+        }
+    }
+    if ($migrated > 0) {
+        $messages[] = "MIGRATED: $migrated korisnika → scanner_user_accounts";
+    } else {
+        $messages[] = "OK: scanner_user_accounts migracija";
+    }
+
     $cnt = (int)$pdo->query("SELECT COUNT(*) FROM scanner_users")->fetchColumn();
     if ($cnt === 0) {
         $hash = password_hash($config['default_admin_pass'], PASSWORD_DEFAULT);

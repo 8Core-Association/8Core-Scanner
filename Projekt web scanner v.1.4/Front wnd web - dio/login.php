@@ -13,7 +13,7 @@ require __DIR__ . '/includes/helpers.php';
 $error = '';
 
 if (is_logged_in()) {
-    header('Location: index.php');
+    header('Location: ' . (is_admin() ? 'admin/index.php' : 'index.php'));
     exit;
 }
 
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = isset($_POST['password']) ? $_POST['password'] : '';
 
     if (login_user($pdo, $username, $password)) {
-        header('Location: index.php');
+        header('Location: ' . (is_admin() ? 'admin/index.php' : 'index.php'));
         exit;
     }
 

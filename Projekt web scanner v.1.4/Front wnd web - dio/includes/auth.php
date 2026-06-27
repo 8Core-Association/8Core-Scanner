@@ -26,6 +26,12 @@ function is_admin() {
     return $u && $u['role'] === 'admin';
 }
 
+function user_accounts() {
+    $u = current_user();
+    if (!$u) return [];
+    return isset($u['accounts']) ? $u['accounts'] : [];
+}
+
 function require_login() {
     if (!is_logged_in()) {
         header('Location: login.php');
@@ -51,11 +57,21 @@ function login_user(PDO $pdo, $username, $password) {
         return false;
     }
 
+    $acctStmt = $pdo->prepare("SELECT account_name FROM scanner_user_accounts WHERE user_id = ? ORDER BY account_name");
+    $acctStmt->execute([$user['id']]);
+    $accounts = $acctStmt->fetchAll(PDO::FETCH_COLUMN);
+
+    // Backwards compat: if new table empty but old column set, use it
+    if (empty($accounts) && !empty($user['account_name'])) {
+        $accounts = [$user['account_name']];
+    }
+
     $_SESSION['scanner_user'] = [
-        'id' => (int)$user['id'],
-        'username' => $user['username'],
-        'role' => $user['role'],
+        'id'           => (int)$user['id'],
+        'username'     => $user['username'],
+        'role'         => $user['role'],
         'account_name' => $user['account_name'],
+        'accounts'     => $accounts,
     ];
 
     $upd = $pdo->prepare("UPDATE scanner_users SET last_login = NOW() WHERE id = ?");
@@ -76,8 +92,8 @@ function logout_user() {
 function can_access_finding(PDO $pdo, $findingId) {
     if (is_admin()) return true;
 
-    $u = current_user();
-    if (!$u) return false;
+    $accounts = user_accounts();
+    if (empty($accounts)) return false;
 
     $stmt = $pdo->prepare("SELECT account_name, owner_name FROM findings WHERE id = ? LIMIT 1");
     $stmt->execute([(int)$findingId]);
@@ -86,5 +102,5 @@ function can_access_finding(PDO $pdo, $findingId) {
     if (!$f) return false;
 
     $acc = $f['account_name'] ?: $f['owner_name'];
-    return $acc === $u['account_name'];
+    return in_array($acc, $accounts, true);
 }
