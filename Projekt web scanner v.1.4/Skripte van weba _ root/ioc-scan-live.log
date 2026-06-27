@@ -1,0 +1,197 @@
+[2026-06-27 09:47:32] 8Core IOC Scanner v2 started
+[2026-06-27 09:47:32] Base: /home
+[2026-06-27 09:47:32] Database: 8core5_scanner@localhost
+[2026-06-27 09:47:32] Scan ID: 2
+[2026-06-27 09:47:32] Scanning: filefuns.php [CRITICAL]
+[2026-06-27 09:47:39] Scanning: .sys-* files [HIGH]
+[2026-06-27 09:47:44] Scanning: adman marker txt [HIGH]
+[2026-06-27 09:47:49] Scanning: mixed-case PHP extensions [MEDIUM]
+[2026-06-27 09:47:52] FOUND [MEDIUM] mixed-case PHP extensions :: /home/avista/public_html/media/com_sppagebuilder/assets/iconfont/icorwigec/fonts/fiqrdte.PHP
+[2026-06-27 09:47:52] FOUND [MEDIUM] mixed-case PHP extensions :: /home/avista/public_html/media/com_sppagebuilder/assets/iconfont/icoqoci/fonts/ahobyl.phP
+[2026-06-27 09:47:52] FOUND [MEDIUM] mixed-case PHP extensions :: /home/avista/public_html/media/com_sppagebuilder/assets/iconfont/icoygzxpe/fonts/index.PHP
+[2026-06-27 09:47:52] FOUND [MEDIUM] mixed-case PHP extensions :: /home/avista/public_html/media/com_sppagebuilder/assets/iconfont/icoygzxpe/fonts/fxeeaxh.PHP
+[2026-06-27 09:47:52] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoxybqvz/fonts/fvltynf.PHP
+[2026-06-27 09:47:52] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoqxgsb9/fonts/fo4ozkj.PHP
+[2026-06-27 09:47:52] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoqxgsb9/fonts/uploader.PHP
+[2026-06-27 09:47:52] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icodg9k0i/fonts/f70qnq6.PHP
+[2026-06-27 09:47:53] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icodg9k0i/fonts/uploader.PHP
+[2026-06-27 09:47:53] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icom87w56/fonts/f0vw9rp.PHP
+[2026-06-27 09:47:53] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icom87w56/fonts/uploader.PHP
+[2026-06-27 09:47:53] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoeuufyc/fonts/fhltxko.PHP
+[2026-06-27 09:47:53] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoqtkcew/fonts/fssgoot.PHP
+[2026-06-27 09:47:53] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icorukgnq/fonts/fltjgsh.PHP
+[2026-06-27 09:47:53] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icojjgtpn/fonts/fmkgwmm.PHP
+[2026-06-27 09:47:53] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icokzjuxc/fonts/fmjmtpx.PHP
+[2026-06-27 09:47:54] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icotmcqdc/fonts/fvilaxk.PHP
+[2026-06-27 09:47:54] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoyufbnr/fonts/faqteos.PHP
+[2026-06-27 09:47:54] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icotbhcmu/fonts/fycdvcj.PHP
+[2026-06-27 09:47:54] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icooqwfeo/fonts/fqpsoxy.PHP
+[2026-06-27 09:47:54] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoiggego/fonts/ffdlxlr.PHP
+[2026-06-27 09:47:54] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icobshyuo/fonts/frkw36z.PHP
+[2026-06-27 09:47:54] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icobshyuo/fonts/uploader.PHP
+[2026-06-27 09:47:54] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoj7tkpi/fonts/fcmnj61.PHP
+[2026-06-27 09:47:54] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoj7tkpi/fonts/uploader.PHP
+[2026-06-27 09:47:55] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/ico0hlv8m/fonts/fmyjl3d.PHP
+[2026-06-27 09:47:55] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/ico0hlv8m/fonts/uploader.PHP
+[2026-06-27 09:47:55] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoojwmzk/fonts/fencsir.PHP
+[2026-06-27 09:47:55] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icofrjqlr/fonts/fyqvmgb.PHP
+[2026-06-27 09:47:55] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icotxeqcp/fonts/fpzlisw.PHP
+[2026-06-27 09:47:55] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icozngjqq/fonts/fpsbbbh.PHP
+[2026-06-27 09:47:55] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icodgllsx/fonts/faejbpl.PHP
+[2026-06-27 09:47:55] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoheahos/fonts/fopzfyc.PHP
+[2026-06-27 09:47:55] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/ico0qlgff/fonts/fvbk8s4.PHP
+[2026-06-27 09:47:56] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/ico0qlgff/fonts/uploader.PHP
+[2026-06-27 09:47:56] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoriqd8h/fonts/faghib2.PHP
+[2026-06-27 09:47:56] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoriqd8h/fonts/uploader.PHP
+[2026-06-27 09:47:56] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icofhuexh/fonts/fkqjphu.PHP
+[2026-06-27 09:47:56] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icojozouj/fonts/fpyipkb.PHP
+[2026-06-27 09:47:56] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/iconrfvxq/fonts/fxhcvhq.PHP
+[2026-06-27 09:47:59] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icogpbfrx/fonts/fbyhnid.PHP
+[2026-06-27 09:47:59] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icolabsjh/fonts/frqfrzm.PHP
+[2026-06-27 09:47:59] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/media/com_sppagebuilder/assets/iconfont/icoshkeoa/fonts/fdgqeyc.PHP
+[2026-06-27 09:47:59] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/tmp/builderCustomIcon_6a3f1a5836cd9/fonts/fvbk8s4.PHP
+[2026-06-27 09:47:59] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/tmp/builderCustomIcon_6a3f1a5836cd9/fonts/uploader.PHP
+[2026-06-27 09:47:59] FOUND [MEDIUM] mixed-case PHP extensions :: /home/rocketdb/zgtri.rocketdbs.com/tmp/builderCustomIcon_6a3f3c4c5ca21/fonts/fbyhnid.PHP
+[2026-06-27 09:47:59] FOUND [MEDIUM] mixed-case PHP extensions :: /home/motorpoi/www.motorpoint.hr/media/com_sppagebuilder/assets/iconfont/icordtnsb/fonts/fqyijyp.PHP
+[2026-06-27 09:47:59] FOUND [MEDIUM] mixed-case PHP extensions :: /home/ulovipus/public_html/components/com_ajax/njuyzj.phP
+[2026-06-27 09:48:00] FOUND [MEDIUM] mixed-case PHP extensions :: /home/ulovipus/public_html/components/com_ajax/y2e1ow.phP
+[2026-06-27 09:48:00] FOUND [MEDIUM] mixed-case PHP extensions :: /home/ulovipus/public_html/layouts/joomla/html/m2zjmg.phP
+[2026-06-27 09:48:00] FOUND [MEDIUM] mixed-case PHP extensions :: /home/ulovipus/public_html/layouts/joomla/html/njy0yt.phP
+[2026-06-27 09:48:01] FOUND [MEDIUM] mixed-case PHP extensions :: /home/ulovipus/public_html/layouts/joomla/icon/mmm1mj.phP
+[2026-06-27 09:48:01] FOUND [MEDIUM] mixed-case PHP extensions :: /home/ulovipus/public_html/media/mailto/images/athumbnail_w.jpg?.PHP
+[2026-06-27 09:48:01] FOUND [MEDIUM] mixed-case PHP extensions :: /home/ulovipus/public_html/media/mailto/images/athumbnail_w.jpg?.phP
+[2026-06-27 09:48:01] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icovi3erm/fonts/fmvrgdb.PHP
+[2026-06-27 09:48:01] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icovi3erm/fonts/uploader.PHP
+[2026-06-27 09:48:01] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icocmvqjr/fonts/fbose5t.PHP
+[2026-06-27 09:48:02] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icocmvqjr/fonts/uploader.PHP
+[2026-06-27 09:48:02] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoievxwd/fonts/fusqfui.PHP
+[2026-06-27 09:48:02] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icomuhhdb/fonts/fveuhfg.PHP
+[2026-06-27 09:48:02] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icouchvhy/fonts/fptpbof.PHP
+[2026-06-27 09:48:02] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/ico47zl8b/fonts/fs7wpsn.PHP
+[2026-06-27 09:48:02] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/ico47zl8b/fonts/uploader.PHP
+[2026-06-27 09:48:03] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icogxxdr5/fonts/fw5n25b.PHP
+[2026-06-27 09:48:03] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icogxxdr5/fonts/uploader.PHP
+[2026-06-27 09:48:03] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icozptqoe/fonts/foupvdd.PHP
+[2026-06-27 09:48:03] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoltxphw/fonts/fmayjan.PHP
+[2026-06-27 09:48:03] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoheaxci/fonts/fvkyeyw.PHP
+[2026-06-27 09:48:03] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icopvjpag/fonts/fqymmon.PHP
+[2026-06-27 09:48:03] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icofraaft/fonts/fcgdbmo.PHP
+[2026-06-27 09:48:03] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoxrll1a/fonts/fn2rmdy.PHP
+[2026-06-27 09:48:04] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoxrll1a/fonts/uploader.PHP
+[2026-06-27 09:48:04] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icovpbeh5/fonts/fjhb145.PHP
+[2026-06-27 09:48:04] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icovpbeh5/fonts/uploader.PHP
+[2026-06-27 09:48:04] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icokjqjpj/fonts/fdcahrb.PHP
+[2026-06-27 09:48:04] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icokczekv/fonts/fiaatlv.PHP
+[2026-06-27 09:48:04] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icocclrmc/fonts/fhpxtcs.PHP
+[2026-06-27 09:48:04] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icohkgzio/fonts/fcpifgt.PHP
+[2026-06-27 09:48:04] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoqwjeoi/fonts/fkfnwry.PHP
+[2026-06-27 09:48:04] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoikvafa/fonts/fwxordl.pHp
+[2026-06-27 09:48:05] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoifyryv/fonts/foemqqg.Php
+[2026-06-27 09:48:05] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icodzukrp/fonts/frbxxqq.PHP
+[2026-06-27 09:48:05] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icooetwib/fonts/fcbbkjt.PHP
+[2026-06-27 09:48:05] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/ico19pmn4/fonts/rce_fm2c4ce.PHP
+[2026-06-27 09:48:05] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/ico19pmn4/fonts/uploader.PHP
+[2026-06-27 09:48:05] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/ico19pmn4/fonts/sadboy.PHP
+[2026-06-27 09:48:05] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icogcjap7/fonts/rce_ftgyci8.PHP
+[2026-06-27 09:48:05] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icogcjap7/fonts/uploader.PHP
+[2026-06-27 09:48:06] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icogcjap7/fonts/sadboy.PHP
+[2026-06-27 09:48:06] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoanlvwt/fonts/fbvptjg.PHP
+[2026-06-27 09:48:06] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/iconymeuh/fonts/fnetriz.PHP
+[2026-06-27 09:48:06] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icorvrgsm/fonts/fsljcfb.PHP
+[2026-06-27 09:48:06] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoaffjnf/fonts/fckicfh.pHp
+[2026-06-27 09:48:06] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoxrxple/fonts/fycqriy.pHp
+[2026-06-27 09:48:06] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icotpqgny/fonts/ferlouy.Php
+[2026-06-27 09:48:07] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoxkfccr/fonts/foncqra.Php
+[2026-06-27 09:48:07] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icodgeutv/fonts/ffemcfc.PHP
+[2026-06-27 09:48:07] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icoqinsek/fonts/fnbbfid.PHP
+[2026-06-27 09:48:07] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icolavbfd/fonts/fchfsdr.PHP
+[2026-06-27 09:48:07] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icofxcall/fonts/fxjrvmt.PHP
+[2026-06-27 09:48:07] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icokojqpy/fonts/fzprtyg.PHP
+[2026-06-27 09:48:08] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icolyjmum/fonts/fjrjjad.PHP
+[2026-06-27 09:48:08] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icovcyvkv/fonts/fahcwfh.PHP
+[2026-06-27 09:48:08] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icozsibyy/fonts/fgucdkb.PHP
+[2026-06-27 09:48:08] FOUND [MEDIUM] mixed-case PHP extensions :: /home/zlatnad/zlatna-dolina.hr/media/com_sppagebuilder/assets/iconfont/icowfuvgi/fonts/fwywqqr.PHP
+[2026-06-27 09:48:08] Scanning: tmp executable web files [HIGH]
+[2026-06-27 09:48:12] FOUND [HIGH] tmp executable web files :: /home/avista/public_html/tmp/index.php
+[2026-06-27 09:48:12] FOUND [HIGH] tmp executable web files :: /home/rocketdb/public_html/story/tmp/akeeba.backend.id-20220216-211256-847391.log.php
+[2026-06-27 09:48:12] FOUND [HIGH] tmp executable web files :: /home/rocketdb/public_html/story/tmp/akeeba.backend.id-20220521-120540-372411.log.php
+[2026-06-27 09:48:12] FOUND [HIGH] tmp executable web files :: /home/rocketdb/public_html/story/tmp/akstorage_backend.id-20220521-120540-372411.php
+[2026-06-27 09:48:12] FOUND [HIGH] tmp executable web files :: /home/rocketdb/zgtri.rocketdbs.com/tmp/builderCustomIcon_6a3ecf265df4b/fonts/Mushr00w_proof.php
+[2026-06-27 09:48:12] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/ctf.xml.php
+[2026-06-27 09:48:13] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jce0m23ybw4.xml.php
+[2026-06-27 09:48:13] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/index.php
+[2026-06-27 09:48:13] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/JCE29994_s9eo08xt.xml.php
+[2026-06-27 09:48:13] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/k9261hca1xvy.php
+[2026-06-27 09:48:13] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/JCE29994_jhvjki4k.xml.php
+[2026-06-27 09:48:13] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/vbeqyqp3n2gb.php
+[2026-06-27 09:48:13] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/deleteme.c6376e1a2dd9bc10346963e887cf2ef3.php
+[2026-06-27 09:48:13] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/sha512.php
+[2026-06-27 09:48:14] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/joomla-2662a892a59f751646087e2be267d680.xml.php
+[2026-06-27 09:48:14] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jce_exrnxs.xml.php
+[2026-06-27 09:48:14] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/s1781757636.php
+[2026-06-27 09:48:14] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/cachelite.xml.php
+[2026-06-27 09:48:14] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/cache_data.xml.php
+[2026-06-27 09:48:14] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/lang_helper.php
+[2026-06-27 09:48:14] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/x.phar
+[2026-06-27 09:48:14] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/imp.xml.php
+[2026-06-27 09:48:15] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/imp.phtml
+[2026-06-27 09:48:15] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/imp.xml.phtml
+[2026-06-27 09:48:15] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/sess_728440.php
+[2026-06-27 09:48:15] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/nuclei-2662a892a59f751646087e2be267d680.xml.php
+[2026-06-27 09:48:15] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jce_bvoqji.xml.php
+[2026-06-27 09:48:15] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/sess_cache.xml.php
+[2026-06-27 09:48:15] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jcee7us0uxa.xml.php
+[2026-06-27 09:48:15] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jcegpth0y5b.xml.php
+[2026-06-27 09:48:16] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/wraith49.xml.php
+[2026-06-27 09:48:16] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/wraith44.xml.php
+[2026-06-27 09:48:16] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jce_bsecji.xml.php
+[2026-06-27 09:48:16] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jce_dkyfvs.xml.php
+[2026-06-27 09:48:16] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jcebse01v9y.xml.php
+[2026-06-27 09:48:16] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jce_zmcsif.xml.php
+[2026-06-27 09:48:16] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/n.xml.php
+[2026-06-27 09:48:16] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/n.phtml
+[2026-06-27 09:48:17] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/n.phar
+[2026-06-27 09:48:17] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/cve-2026-48907-8828.xml.php
+[2026-06-27 09:48:17] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/cve-2026-48907-7343.xml.php
+[2026-06-27 09:48:17] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/cve-2026-48907-9601.xml.php
+[2026-06-27 09:48:17] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/cve-2026-48907-8416.xml.php
+[2026-06-27 09:48:17] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/cve-2026-48907-8009.xml.php
+[2026-06-27 09:48:17] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jceqt5xfxkd.xml.php
+[2026-06-27 09:48:17] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/admin.php
+[2026-06-27 09:48:18] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/cve-2026-48907-5428.xml.php
+[2026-06-27 09:48:18] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jce_xjrqnq_fm.xml.php
+[2026-06-27 09:48:18] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jce_errfun_up.xml.php
+[2026-06-27 09:48:18] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/up.php
+[2026-06-27 09:48:18] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jce9yjc8cs2.xml.php
+[2026-06-27 09:48:18] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/splms.php
+[2026-06-27 09:48:18] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/x.php
+[2026-06-27 09:48:18] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jceakhbmhi7.xml.php
+[2026-06-27 09:48:19] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/m.php
+[2026-06-27 09:48:19] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/shell-9610.php
+[2026-06-27 09:48:19] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jcei8a594vq.xml.php
+[2026-06-27 09:48:19] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/jcel3xw0flg.xml.php
+[2026-06-27 09:48:19] FOUND [HIGH] tmp executable web files :: /home/buckhr/public_html/tmp/shxt_1782533409_xjwuv.php
+[2026-06-27 09:48:19] FOUND [HIGH] tmp executable web files :: /home/vinorahr/public_html/wp-content/backuply/backups-YDB8vQ/tmp/index.php
+[2026-06-27 09:48:19] FOUND [HIGH] tmp executable web files :: /home/confiden/tmp/assets/images/accesson.php
+[2026-06-27 09:48:20] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/images/tmp/wraith56.php
+[2026-06-27 09:48:20] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/tmp/index.php
+[2026-06-27 09:48:20] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/tmp/cache.php
+[2026-06-27 09:48:20] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/825825.php
+[2026-06-27 09:48:20] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/825825.php5
+[2026-06-27 09:48:20] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/825825.phar
+[2026-06-27 09:48:20] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/825825.phtml
+[2026-06-27 09:48:20] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/986986.phtml
+[2026-06-27 09:48:21] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/986986.phar
+[2026-06-27 09:48:21] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/986986.php
+[2026-06-27 09:48:21] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/986986.php5
+[2026-06-27 09:48:21] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/991991.php
+[2026-06-27 09:48:21] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/991991.phar
+[2026-06-27 09:48:21] FOUND [HIGH] tmp executable web files :: /home/confiden/confident.hr/tmp/991991.php5
+[2026-06-27 09:48:21] FOUND [HIGH] tmp executable web files :: /home/caffebar/public_html/wp-content/plugins/akeebabackupwp/app/tmp/compiled_templates/06596c0925d737c771130ad290ea42f2349a5ec8.php
+[2026-06-27 09:48:22] FOUND [HIGH] tmp executable web files :: /home/caffebar/public_html/wp-content/plugins/akeebabackupwp/app/tmp/compiled_templates/0754c75828b0dc28993d476a48487eee60e80ef9.php
+[2026-06-27 09:48:22] FOUND [HIGH] tmp executable web files :: /home/caffebar/public_html/wp-content/plugins/akeebabackupwp/app/tmp/compiled_templates/2804575c0f924384c48d37edc2962b5f9a8cb737.php
+[2026-06-27 09:48:22] FOUND [HIGH] tmp executable web files :: /home/caffebar/public_html/wp-content/plugins/akeebabackupwp/app/tmp/compiled_templates/46f2896708595b7cc73a07af68b35ca35ea1112e.php
+[2026-06-27 09:48:22] FOUND [HIGH] tmp executable web files :: /home/caffebar/public_html/wp-content/plugins/akeebabackupwp/app/tmp/compiled_templates/88f1ce6b085838849947ba28b289a6198dcc4c5e.php
+[2026-06-27 09:48:22] FOUND [HIGH] tmp executable web files :: /home/caffebar/public_html/wp-content/plugins/akeebabackupwp/app/tmp/compiled_templates/a75440ce0df8b702941c65cd8a1f50a0acb762e5.php
+[2026-06-27 09:48:22] FOUND [HIGH] tmp executable web files :: /home/caffebar/public_html/wp-content/plugins/akeebabackupwp/app/tmp/compiled_templates/abddea16daa8d7a3a2ba68f2d53da8fd16d82a98.php
+[2026-06-27 09:48:22] FOUND [HIGH] tmp executable web files :: /home/caffebar/public_html/wp-content/plugins/akeebabackupwp/app/tmp/compiled_templates/c5631a9216e7dac350b4de690c3704facd1a0dd5.php
