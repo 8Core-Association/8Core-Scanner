@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <div class="login-logo-text">
         <div class="name">8Core Scanner</div>
-        <div class="sub">Security Dashboard v3</div>
+        <div class="sub">Security Dashboard v1.5</div>
       </div>
     </div>
 

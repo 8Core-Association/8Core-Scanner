@@ -41,7 +41,7 @@ $recentUsers = $pdo->query("SELECT username, role, active, last_login FROM scann
       </div>
       <span class="logo-text">8Core Scanner</span>
     </div>
-    <div class="logo-version">Admin Panel</div>
+    <div class="logo-version">Admin Panel v1.5</div>
   </div>
 
   <nav class="sidebar-nav">

@@ -142,7 +142,7 @@ try {
       </div>
       <span class="logo-text">8Core Scanner</span>
     </div>
-    <div class="logo-version">IOC Scanner v3</div>
+    <div class="logo-version">IOC Scanner v1.5</div>
   </div>
 
   <nav class="sidebar-nav">
