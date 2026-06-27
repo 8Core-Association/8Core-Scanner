@@ -69,6 +69,7 @@ function login_user(PDO $pdo, $username, $password) {
     $_SESSION['scanner_user'] = [
         'id'           => (int)$user['id'],
         'username'     => $user['username'],
+        'email'        => $user['email'] ?? '',
         'role'         => $user['role'],
         'account_name' => $user['account_name'],
         'accounts'     => $accounts,

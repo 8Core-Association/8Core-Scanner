@@ -81,6 +81,8 @@ try {
     ");
     $messages[] = "OK: scanner_users";
 
+    add_column($pdo, $messages, 'scanner_users', 'email', "VARCHAR(180) NULL");
+
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS scanner_user_accounts (
             id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

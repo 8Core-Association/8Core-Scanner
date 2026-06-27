@@ -21,17 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         $role     = $_POST['role'] ?? 'user';
+        $email    = trim($_POST['email'] ?? '');
         $active   = isset($_POST['active']) ? 1 : 0;
         $selectedAccounts = isset($_POST['accounts']) && is_array($_POST['accounts']) ? $_POST['accounts'] : [];
 
         if ($username !== '' && $password !== '' && in_array($role, ['admin','user'], true)) {
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("
-                INSERT INTO scanner_users (username, password_hash, role, account_name, active, created_at)
-                VALUES (?, ?, ?, ?, ?, NOW())
+                INSERT INTO scanner_users (username, password_hash, role, email, account_name, active, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, NOW())
             ");
             $firstAccount = !empty($selectedAccounts) ? $selectedAccounts[0] : null;
-            $stmt->execute([$username, $hash, $role, $firstAccount, $active]);
+            $stmt->execute([$username, $hash, $role, $email !== '' ? $email : null, $firstAccount, $active]);
             $newId = (int)$pdo->lastInsertId();
 
             foreach ($selectedAccounts as $acc) {
@@ -71,6 +72,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = (int)($_POST['id'] ?? 0);
         $pdo->prepare("UPDATE scanner_users SET active = IF(active=1,0,1) WHERE id = ?")->execute([$id]);
         $message = 'Status promijenjen.';
+    }
+
+    if ($formAction === 'email') {
+        $id    = (int)($_POST['id'] ?? 0);
+        $email = trim($_POST['email'] ?? '');
+        if ($id > 0) {
+            $pdo->prepare("UPDATE scanner_users SET email = ? WHERE id = ?")->execute([$email !== '' ? $email : null, $id]);
+            $message = 'Email ažuriran.';
+        }
     }
 
     if ($formAction === 'password') {
@@ -218,8 +228,9 @@ foreach ($rows as $r) {
       <form method="post">
         <input type="hidden" name="form_action" value="create">
         <div class="form-row" style="flex-wrap:wrap;gap:8px;">
-          <input type="text"     name="username" placeholder="username" required style="flex:1;min-width:140px;">
-          <input type="password" name="password" placeholder="password" required style="flex:1;min-width:140px;">
+          <input type="text"     name="username" placeholder="username" required style="flex:1;min-width:130px;">
+          <input type="password" name="password" placeholder="password" required style="flex:1;min-width:130px;">
+          <input type="email"    name="email"    placeholder="email (opcionalno)" style="flex:1;min-width:170px;">
           <select name="role" style="flex:0 0 auto;">
             <option value="user">user</option>
             <option value="admin">admin</option>
@@ -255,6 +266,7 @@ foreach ($rows as $r) {
             <th>ID</th>
             <th>Username</th>
             <th>Role</th>
+            <th>Email</th>
             <th>Accounti</th>
             <th>Status</th>
             <th>Zadnji login</th>
@@ -268,6 +280,27 @@ foreach ($rows as $r) {
           <td class="small mono"><?= (int)$u['id'] ?></td>
           <td><b><?= h($u['username']) ?></b></td>
           <td><span class="badge <?= $u['role'] === 'admin' ? 'risk-medium' : 'risk-low' ?>"><?= h($u['role']) ?></span></td>
+          <td>
+            <?php if (!empty($u['email'])): ?>
+              <span class="small"><?= h($u['email']) ?></span>
+            <?php else: ?>
+              <span style="color:var(--text-muted);font-size:12px;">—</span>
+            <?php endif; ?>
+            <button type="button" class="btn btn-ghost btn-sm" style="margin-top:4px;display:block;"
+                    onclick="toggleEl('email-<?= (int)$u['id'] ?>')">
+              Uredi email
+            </button>
+            <div id="email-<?= (int)$u['id'] ?>" style="display:none;margin-top:6px;">
+              <form method="post" style="display:flex;gap:5px;align-items:center;">
+                <input type="hidden" name="form_action" value="email">
+                <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
+                <input type="email" name="email" value="<?= h($u['email'] ?? '') ?>"
+                       placeholder="email@domena.hr"
+                       style="padding:5px 8px;font-size:12px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);min-width:160px;">
+                <button type="submit" class="btn btn-primary btn-sm">Spremi</button>
+              </form>
+            </div>
+          </td>
           <td>
             <?php if (!empty($uAccounts)): ?>
               <div class="user-accounts-pills">
@@ -345,6 +378,10 @@ foreach ($rows as $r) {
 function toggleAccounts(id) {
     var el = document.getElementById(id);
     el.classList.toggle('open');
+}
+function toggleEl(id) {
+    var el = document.getElementById(id);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 </script>
 </body>

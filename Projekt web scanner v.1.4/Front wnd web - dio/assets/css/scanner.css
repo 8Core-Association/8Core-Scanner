@@ -871,3 +871,58 @@ tr.row-expanded .expand-toggle svg { stroke: #fff; transform: rotate(45deg); }
   .cards { grid-template-columns: repeat(2, 1fr); }
   .detail-panel { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── BULK ACTION BAR ─────────────────────────── */
+.bulk-bar {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.08);
+  flex-wrap: wrap;
+}
+
+.bulk-bar.visible { display: flex; }
+
+.bulk-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: #93c5fd;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.bulk-bar select {
+  padding: 6px 10px;
+  border: 1px solid var(--border-dark);
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text-inv);
+  background: var(--bg2);
+  outline: none;
+  transition: border-color .13s;
+}
+
+.bulk-bar select:focus { border-color: var(--accent); }
+
+/* row checkbox */
+.row-chk {
+  width: 15px; height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+thead .row-chk,
+#chk-all {
+  width: 15px; height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+tbody tr.row-selected > td { background: #eff6ff; }
+

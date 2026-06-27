@@ -185,6 +185,13 @@ try {
         Nema podataka o scanu
       <?php endif; ?>
       &nbsp;&nbsp;
+      <?php if (is_admin()): ?>
+      <a href="scan.php" class="btn btn-primary btn-sm" style="font-size:12px;padding:4px 12px;"
+         onclick="return confirm('Pokrenuti manualni scan sada?')">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-1px;margin-right:4px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>Pokreni scan
+      </a>
+      &nbsp;
+      <?php endif; ?>
       <a href="logout.php" style="color:var(--text-muted);font-size:12px;">Odjava</a>
     </div>
   </div>
@@ -256,11 +263,28 @@ try {
     </form>
 
     <!-- FINDINGS TABLE -->
+    <form id="bulk-form" method="post" action="action.php">
+    <div class="bulk-bar" id="bulk-bar">
+      <span class="bulk-count" id="bulk-count">0 odabrano</span>
+      <select name="action" id="bulk-action">
+        <option value="">-- Odaberi akciju --</option>
+        <option value="checked">Checked</option>
+        <option value="ignore">Ignore</option>
+        <option value="quarantine_requested">Quarantine</option>
+        <option value="delete_requested">Delete</option>
+        <option value="new">Reset na new</option>
+      </select>
+      <button type="submit" class="btn btn-primary btn-sm" onclick="return confirmBulk()">Primijeni na odabrane</button>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="clearSelection()">Odznači sve</button>
+    </div>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th style="width:32px"></th>
+            <th style="width:32px">
+              <input type="checkbox" id="chk-all" title="Odaberi sve" onchange="toggleAll(this)">
+            </th>
+            <th style="width:20px"></th>
             <th>Risk</th>
             <th>Status</th>
             <th>Account</th>
@@ -273,6 +297,10 @@ try {
         <tbody>
         <?php foreach ($findings as $f): ?>
           <tr class="data-row" data-id="<?= (int)$f['id'] ?>">
+            <td>
+              <input type="checkbox" class="row-chk" name="ids[]" value="<?= (int)$f['id'] ?>"
+                     onchange="updateBulkBar()">
+            </td>
             <td onclick="toggleRow(<?= (int)$f['id'] ?>)">
               <span class="expand-toggle">
                 <svg viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
@@ -325,7 +353,7 @@ try {
           </tr>
           <!-- DETAIL ROW -->
           <tr class="detail-row hidden" id="detail-<?= (int)$f['id'] ?>">
-            <td colspan="8">
+            <td colspan="9">
               <div class="detail-panel">
                 <div class="detail-item">
                   <span class="detail-label">Full path</span>
@@ -382,6 +410,7 @@ try {
         </tbody>
       </table>
     </div>
+    </form>
 
   </div><!-- .content -->
 </div><!-- .main -->
