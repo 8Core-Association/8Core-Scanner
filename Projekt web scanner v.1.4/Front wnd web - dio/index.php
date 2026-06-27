@@ -281,7 +281,8 @@ try {
         <thead>
           <tr>
             <th style="width:32px">
-              <input type="checkbox" id="chk-all" title="Odaberi sve" onchange="toggleAll(this)">
+              <input type="checkbox" id="chk-all" title="Odaberi sve"
+                     onclick="toggleAll(this)">
             </th>
             <th style="width:20px"></th>
             <th>Risk</th>
@@ -298,7 +299,7 @@ try {
           <tr class="data-row" data-id="<?= (int)$f['id'] ?>">
             <td>
               <input type="checkbox" class="row-chk" name="ids[]" value="<?= (int)$f['id'] ?>"
-                     onchange="updateBulkBar()">
+                     onclick="event.stopPropagation(); updateBulkBar()">
             </td>
             <td onclick="toggleRow(<?= (int)$f['id'] ?>)">
               <span class="expand-toggle">

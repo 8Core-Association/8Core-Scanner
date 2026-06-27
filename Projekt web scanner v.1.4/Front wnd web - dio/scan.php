@@ -11,10 +11,9 @@ require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/helpers.php';
 require_admin();
 
-// Putanja do skripte — prilagodi prema stvarnoj lokaciji na serveru
-// Primjer: /root/ioc_scan.sh  ili  /opt/scanner/ioc_scan.sh
-define('SCAN_SCRIPT', '/root/ioc_scan.sh');
-define('SCAN_LOG',    '/root/ioc-scan-live.log');
+// Putanja do skripte — relativno od scan.php prema gore u Skripte folder
+define('SCAN_SCRIPT', realpath(__DIR__ . '/../Skripte van weba _ root/ioc_scan.sh') ?: __DIR__ . '/../Skripte van weba _ root/ioc_scan.sh');
+define('SCAN_LOG',    realpath(__DIR__ . '/../Skripte van weba _ root/ioc-scan-live.log') ?: __DIR__ . '/../Skripte van weba _ root/ioc-scan-live.log');
 
 $status  = '';
 $isError = false;
@@ -144,13 +143,13 @@ try {
     <div class="panel">
       <h2>Manualni scan</h2>
       <p style="font-size:13px;color:var(--text-muted);margin:0 0 16px;">
-        Pokreće <code style="font-family:monospace;background:var(--surface2);padding:2px 6px;border-radius:4px;border:1px solid var(--border);"><?= h(SCAN_SCRIPT) ?></code>
-        asinhrono u pozadini. Potrebno: <strong>sudo</strong> za web korisnika ili setuid bit na skripti.
+        Pokreće <code class="rule-pattern"><?= h(SCAN_SCRIPT) ?></code>
+        asinhrono u pozadini. Potrebno: <strong>sudo</strong> za web korisnika ili executable bit na skripti.
       </p>
 
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12.5px;color:var(--text-muted);">
-        <b style="color:var(--text);">Postavljanje sudo permisije (jednom, kao root):</b><br>
-        <code style="font-family:monospace;display:block;margin-top:6px;color:#0f172a;">
+      <div class="scan-sudo-hint">
+        <b class="scan-sudo-hint-title">Postavljanje sudo permisije (jednom, kao root):</b>
+        <code class="scan-sudo-cmd">
           echo "www-data ALL=(root) NOPASSWD: <?= h(SCAN_SCRIPT) ?>" &gt;&gt; /etc/sudoers.d/scanner
         </code>
       </div>

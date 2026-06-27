@@ -30,7 +30,10 @@ function closeAllDrops() {
   });
 }
 
-document.addEventListener('click', closeAllDrops);
+document.addEventListener('click', function(e) {
+  if (e.target.type === 'checkbox') return;
+  closeAllDrops();
+});
 
 document.addEventListener('submit', function(e) {
   var btn = e.submitter;
