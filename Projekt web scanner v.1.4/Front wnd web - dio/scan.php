@@ -69,9 +69,9 @@ if (file_exists(SCAN_LOG) && is_readable(SCAN_LOG)) {
     $logLines = array_slice($all, -40);
 }
 
-// Je li scan aktivan — traži proces po imenu skripte
+// Je li scan aktivan — traži samo root-owned proces (sudo), ne www-data PHP procese
 $scanRunning = false;
-exec('pgrep -f ' . escapeshellarg(basename(SCAN_SCRIPT)) . ' 2>/dev/null', $pids);
+exec('pgrep -u root -f ' . escapeshellarg(SCAN_SCRIPT) . ' 2>/dev/null', $pids, $pgrepRet);
 $scanRunning = !empty(array_filter($pids));
 
 // Flash poruka
