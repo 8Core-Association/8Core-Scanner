@@ -89,16 +89,40 @@ function clearSelection() {
   updateBulkBar();
 }
 
-function confirmBulk() {
+function submitBulk() {
   var action = document.getElementById('bulk-action');
   var checked = document.querySelectorAll('.row-chk:checked');
+
   if (!action || action.value === '') {
     alert('Odaberi akciju prije primjene.');
-    return false;
+    return;
   }
   if (checked.length === 0) {
     alert('Nijedan nalaz nije odabran.');
-    return false;
+    return;
   }
-  return confirm('Primijeniti "' + action.value + '" na ' + checked.length + ' nalaza?');
+  if (!confirm('Primijeniti "' + action.value + '" na ' + checked.length + ' nalaza?')) {
+    return;
+  }
+
+  var form = document.createElement('form');
+  form.method = 'post';
+  form.action = 'action.php';
+
+  var actionInput = document.createElement('input');
+  actionInput.type = 'hidden';
+  actionInput.name = 'action';
+  actionInput.value = action.value;
+  form.appendChild(actionInput);
+
+  checked.forEach(function(chk) {
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'ids[]';
+    input.value = chk.value;
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
 }

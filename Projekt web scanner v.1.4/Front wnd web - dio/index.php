@@ -263,10 +263,9 @@ try {
     </form>
 
     <!-- FINDINGS TABLE -->
-    <form id="bulk-form" method="post" action="action.php">
     <div class="bulk-bar" id="bulk-bar">
       <span class="bulk-count" id="bulk-count">0 odabrano</span>
-      <select name="action" id="bulk-action">
+      <select id="bulk-action">
         <option value="">-- Odaberi akciju --</option>
         <option value="checked">Checked</option>
         <option value="ignore">Ignore</option>
@@ -274,7 +273,7 @@ try {
         <option value="delete_requested">Delete</option>
         <option value="new">Reset na new</option>
       </select>
-      <button type="submit" class="btn btn-primary btn-sm" onclick="return confirmBulk()">Primijeni na odabrane</button>
+      <button type="button" class="btn btn-primary btn-sm" onclick="submitBulk()">Primijeni na odabrane</button>
       <button type="button" class="btn btn-ghost btn-sm" onclick="clearSelection()">Odznači sve</button>
     </div>
     <div class="table-wrap">
@@ -410,7 +409,6 @@ try {
         </tbody>
       </table>
     </div>
-    </form>
 
   </div><!-- .content -->
 </div><!-- .main -->
