@@ -1,4 +1,10 @@
 
+function toggleEl(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open');
+}
+
 function toggleRow(id) {
   var row = document.querySelector('.data-row[data-id="' + id + '"]');
   var detail = document.getElementById('detail-' + id);

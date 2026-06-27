@@ -114,6 +114,41 @@ try {
         $messages[] = "OK: scanner_user_accounts migracija";
     }
 
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS scanner_rules (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(200) NOT NULL,
+            description TEXT NULL,
+            type ENUM('filename','path','regex','regex_content','sha256','chmod','extension','filesize') NOT NULL DEFAULT 'regex',
+            pattern VARCHAR(1000) NOT NULL,
+            extensions VARCHAR(500) NULL,
+            risk ENUM('CRITICAL','HIGH','MEDIUM','LOW','INFO') NOT NULL DEFAULT 'MEDIUM',
+            active TINYINT(1) NOT NULL DEFAULT 1,
+            note TEXT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(80) NULL,
+            INDEX(type),
+            INDEX(risk),
+            INDEX(active)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+    $messages[] = "OK: scanner_rules";
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS scanner_ignore_list (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            category ENUM('file','path','hash','user') NOT NULL,
+            value VARCHAR(1000) NOT NULL,
+            note TEXT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            created_by VARCHAR(80) NULL,
+            INDEX(category),
+            INDEX(value(100))
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+    $messages[] = "OK: scanner_ignore_list";
+
     $cnt = (int)$pdo->query("SELECT COUNT(*) FROM scanner_users")->fetchColumn();
     if ($cnt === 0) {
         $hash = password_hash($config['default_admin_pass'], PASSWORD_DEFAULT);
