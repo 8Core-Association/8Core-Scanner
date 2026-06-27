@@ -112,139 +112,267 @@ try {
 <html lang="hr">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>8Core Scanner</title>
 <link rel="stylesheet" href="assets/css/scanner.css">
 </head>
 <body>
+<div class="layout">
 
-<div class="header">
-    <h1>8Core Scanner</h1>
-    <div class="meta">
-        Logged in: <?= h($user['username']) ?> / <?= h($user['role']) ?>
-        <?php if (!is_admin()): ?> / account: <?= h($user['account_name']) ?><?php endif; ?>
-        <br>
-        Zadnji scan:
-        <?php if ($lastScan): ?>
-            <?= h($lastScan['started_at']) ?> / <?= h($lastScan['status']) ?> / findings: <?= h($lastScan['files_found']) ?>
-        <?php else: ?>
-            nema podataka
-        <?php endif; ?>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <span class="logo-text">8Core Scanner</span>
     </div>
-</div>
+    <div class="logo-version">IOC Scanner v3</div>
+  </div>
 
-<div class="nav">
-    <a href="index.php">Dashboard</a>
-    <?php if (is_admin()): ?><a href="admin/users.php">Users</a><?php endif; ?>
-    <a href="logout.php">Logout</a>
-</div>
-
-<div class="container">
-
-<?php if (!$hasAction): ?>
-    <div class="notice">Baza nema auth/action stupce. Otvori <a href="migrate.php">migrate.php</a>.</div>
-<?php endif; ?>
-
-<div class="cards">
-    <div class="card"><div class="label">Critical</div><div class="num"><?= (int)($stats['CRITICAL'] ?? 0) ?></div></div>
-    <div class="card"><div class="label">High</div><div class="num"><?= (int)($stats['HIGH'] ?? 0) ?></div></div>
-    <div class="card"><div class="label">Medium</div><div class="num"><?= (int)($stats['MEDIUM'] ?? 0) ?></div></div>
-    <div class="card"><div class="label">Ignored</div><div class="num"><?= (int)($actionStats['ignore'] ?? 0) ?></div></div>
-    <div class="card"><div class="label">Quarantine req.</div><div class="num"><?= (int)($actionStats['quarantine_requested'] ?? 0) ?></div></div>
-    <div class="card"><div class="label">Delete req.</div><div class="num"><?= (int)($actionStats['delete_requested'] ?? 0) ?></div></div>
-</div>
-
-<form class="filters" method="get">
-    <select name="risk">
-        <option value="">Svi rizici</option>
-        <?php foreach (['CRITICAL','HIGH','MEDIUM','LOW'] as $r): ?>
-            <option value="<?= h($r) ?>" <?= $risk === $r ? 'selected' : '' ?>><?= h($r) ?></option>
-        <?php endforeach; ?>
-    </select>
-
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Menu</div>
+    <a class="sidebar-link active" href="index.php">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
     <?php if (is_admin()): ?>
-    <select name="account">
-        <option value="">Svi accounti</option>
-        <?php foreach ($accounts as $a): ?>
-            <option value="<?= h($a['account_name']) ?>" <?= $account === $a['account_name'] ? 'selected' : '' ?>>
-                <?= h($a['account_name']) ?> (<?= (int)$a['total'] ?>)
-            </option>
-        <?php endforeach; ?>
-    </select>
+    <a class="sidebar-link" href="admin/users.php">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Users
+    </a>
+    <?php endif; ?>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="avatar"><?= h(mb_substr($user['username'], 0, 1)) ?></div>
+      <div class="user-info">
+        <div class="user-name"><?= h($user['username']) ?></div>
+        <div class="user-role"><?= h($user['role']) ?><?php if (!is_admin()): ?> &middot; <?= h($user['account_name']) ?><?php endif; ?></div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Findings</div>
+    <div class="topbar-meta">
+      <?php if ($lastScan): ?>
+        <span class="scan-dot <?= $lastScan['status'] === 'RUNNING' ? 'running' : '' ?>"></span>
+        Zadnji scan: <?= h($lastScan['started_at']) ?>
+        &nbsp;&middot;&nbsp; <?= h($lastScan['status']) ?>
+        &nbsp;&middot;&nbsp; <?= (int)$lastScan['files_found'] ?> nalaza
+      <?php else: ?>
+        <span class="scan-dot" style="background:#94a3b8"></span>
+        Nema podataka o scanu
+      <?php endif; ?>
+      &nbsp;&nbsp;
+      <a href="logout.php" style="color:var(--text-muted);font-size:12px;">Odjava</a>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <?php if (!$hasAction): ?>
+      <div class="notice">Baza nema action stupce. Otvori <a href="migrate.php">migrate.php</a>.</div>
     <?php endif; ?>
 
-    <select name="status">
+    <!-- STAT CARDS -->
+    <div class="cards">
+      <div class="card card-critical">
+        <div class="label">Critical</div>
+        <div class="num"><?= (int)($stats['CRITICAL'] ?? 0) ?></div>
+      </div>
+      <div class="card card-high">
+        <div class="label">High</div>
+        <div class="num"><?= (int)($stats['HIGH'] ?? 0) ?></div>
+      </div>
+      <div class="card card-medium">
+        <div class="label">Medium</div>
+        <div class="num"><?= (int)($stats['MEDIUM'] ?? 0) ?></div>
+      </div>
+      <div class="card card-action">
+        <div class="label">Ignored</div>
+        <div class="num"><?= (int)($actionStats['ignore'] ?? 0) ?></div>
+      </div>
+      <div class="card card-action">
+        <div class="label">Quarantine req.</div>
+        <div class="num"><?= (int)($actionStats['quarantine_requested'] ?? 0) ?></div>
+      </div>
+      <div class="card card-action">
+        <div class="label">Delete req.</div>
+        <div class="num"><?= (int)($actionStats['delete_requested'] ?? 0) ?></div>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <form class="filters" method="get">
+      <select name="risk">
+        <option value="">Svi rizici</option>
+        <?php foreach (['CRITICAL','HIGH','MEDIUM','LOW'] as $r): ?>
+          <option value="<?= h($r) ?>" <?= $risk === $r ? 'selected' : '' ?>><?= h($r) ?></option>
+        <?php endforeach; ?>
+      </select>
+
+      <?php if (is_admin()): ?>
+      <select name="account">
+        <option value="">Svi accounti</option>
+        <?php foreach ($accounts as $a): ?>
+          <option value="<?= h($a['account_name']) ?>" <?= $account === $a['account_name'] ? 'selected' : '' ?>>
+            <?= h($a['account_name']) ?> (<?= (int)$a['total'] ?>)
+          </option>
+        <?php endforeach; ?>
+      </select>
+      <?php endif; ?>
+
+      <select name="status">
         <option value="">Svi statusi</option>
         <?php foreach (['new','checked','ignore','quarantine_requested','delete_requested'] as $s): ?>
-            <option value="<?= h($s) ?>" <?= $status === $s ? 'selected' : '' ?>><?= h($s) ?></option>
+          <option value="<?= h($s) ?>" <?= $status === $s ? 'selected' : '' ?>><?= h($s) ?></option>
         <?php endforeach; ?>
-    </select>
+      </select>
 
-    <input type="text" name="q" value="<?= h($q) ?>" placeholder="Pretraga file/path/rule">
-    <button type="submit">Filtriraj</button>
-    <a href="index.php">Reset</a>
-</form>
+      <input type="text" name="q" value="<?= h($q) ?>" placeholder="Pretraga file / path / rule">
+      <button type="submit" class="btn btn-primary btn-sm">Filtriraj</button>
+      <a href="index.php" class="btn btn-ghost btn-sm">Reset</a>
+    </form>
 
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-    <th>Risk</th>
-    <th>Status</th>
-    <th>Account</th>
-    <th>File</th>
-    <th>Datumi</th>
-    <th>Perm</th>
-    <th>Size</th>
-    <th>Rule</th>
-    <th>Source</th>
-    <th>Path</th>
-    <th>Actions</th>
-</tr>
-</thead>
-<tbody>
-<?php foreach ($findings as $f): ?>
-<tr>
-    <td><span class="badge <?= risk_class($f['risk']) ?>"><?= h($f['risk']) ?></span></td>
-    <td>
-        <span class="status-pill <?= action_class($f['action_status']) ?>"><?= h($f['action_status']) ?></span>
-        <?php if (!empty($f['action_note'])): ?><div class="small"><?= h($f['action_note']) ?></div><?php endif; ?>
-    </td>
-    <td><?= h($f['account_name']) ?><div class="small">owner: <?= h($f['owner_name']) ?></div></td>
-    <td><b><?= h($f['file_name']) ?></b><div class="small">ext: <?= h($f['file_ext']) ?></div></td>
-    <td>
-        <div class="small">mtime: <?= h($f['mtime']) ?></div>
-        <div class="small">ctime: <?= h($f['ctime']) ?></div>
-        <div class="small">birth: <?= h($f['birth_time']) ?></div>
-        <div class="small">detected: <?= h($f['detected_at']) ?></div>
-    </td>
-    <td><?= h($f['perms']) ?></td>
-    <td><?= number_format((int)$f['file_size']) ?> B</td>
-    <td><?= h($f['rule_name']) ?></td>
-    <td><?= h($f['source_guess']) ?><div class="small"><?= h($f['source_type']) ?></div></td>
-    <td class="path"><?= h($f['file_path']) ?><div class="small"><?= h($f['relative_path']) ?></div></td>
-    <td>
-        <div class="actions">
-            <?php foreach ([
-                'checked' => ['Checked','btn-check'],
-                'ignore' => ['Ignore','btn-ignore'],
-                'quarantine_requested' => ['Quarantine','btn-quarantine'],
-                'delete_requested' => ['Delete','btn-delete'],
-            ] as $act => $meta): ?>
-            <form method="post" action="action.php" class="action-form">
-                <input type="hidden" name="id" value="<?= (int)$f['id'] ?>">
-                <input type="hidden" name="action" value="<?= h($act) ?>">
-                <button class="action-btn <?= h($meta[1]) ?>" type="submit"><?= h($meta[0]) ?></button>
-            </form>
-            <?php endforeach; ?>
-        </div>
-    </td>
-</tr>
-<?php endforeach; ?>
-</tbody>
-</table>
-</div>
+    <!-- FINDINGS TABLE -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:32px"></th>
+            <th>Risk</th>
+            <th>Status</th>
+            <th>Account</th>
+            <th>File</th>
+            <th>Rule</th>
+            <th>Source</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($findings as $f): ?>
+          <tr class="data-row" data-id="<?= (int)$f['id'] ?>">
+            <td onclick="toggleRow(<?= (int)$f['id'] ?>)">
+              <span class="expand-toggle">
+                <svg viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+              </span>
+            </td>
+            <td onclick="toggleRow(<?= (int)$f['id'] ?>)">
+              <span class="badge <?= risk_class($f['risk']) ?>"><?= h($f['risk']) ?></span>
+            </td>
+            <td onclick="toggleRow(<?= (int)$f['id'] ?>)">
+              <span class="status-pill <?= action_class($f['action_status']) ?>"><?= h($f['action_status']) ?></span>
+            </td>
+            <td onclick="toggleRow(<?= (int)$f['id'] ?>)">
+              <?= h($f['account_name']) ?>
+              <div class="small">owner: <?= h($f['owner_name']) ?></div>
+            </td>
+            <td onclick="toggleRow(<?= (int)$f['id'] ?>)">
+              <b><?= h($f['file_name']) ?></b>
+              <?php if ($f['file_ext']): ?><div class="small">.<?= h($f['file_ext']) ?></div><?php endif; ?>
+            </td>
+            <td onclick="toggleRow(<?= (int)$f['id'] ?>)"><?= h($f['rule_name']) ?></td>
+            <td onclick="toggleRow(<?= (int)$f['id'] ?>)">
+              <?= h($f['source_guess']) ?>
+              <div class="small"><?= h($f['source_type']) ?></div>
+            </td>
+            <td>
+              <div class="action-drop" id="drop-<?= (int)$f['id'] ?>">
+                <button class="action-drop-btn" type="button"
+                        onclick="toggleDrop('drop-<?= (int)$f['id'] ?>', event)">
+                  Akcija
+                  <svg class="chevron" viewBox="0 0 12 12"><polyline points="2,4 6,8 10,4"/></svg>
+                </button>
+                <div class="action-menu">
+                  <?php foreach ([
+                    'checked'              => ['Checked',    'act-checked'],
+                    'ignore'               => ['Ignore',     'act-ignore'],
+                    'quarantine_requested' => ['Quarantine', 'act-quarantine'],
+                    'delete_requested'     => ['Delete',     'act-delete'],
+                  ] as $act => $meta): ?>
+                  <form method="post" action="action.php">
+                    <input type="hidden" name="id"     value="<?= (int)$f['id'] ?>">
+                    <input type="hidden" name="action" value="<?= h($act) ?>">
+                    <button type="submit" class="action-menu-item <?= h($meta[1]) ?>">
+                      <span class="dot"></span><?= h($meta[0]) ?>
+                    </button>
+                  </form>
+                  <?php endforeach; ?>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <!-- DETAIL ROW -->
+          <tr class="detail-row hidden" id="detail-<?= (int)$f['id'] ?>">
+            <td colspan="8">
+              <div class="detail-panel">
+                <div class="detail-item">
+                  <span class="detail-label">Full path</span>
+                  <span class="detail-value mono"><?= h($f['file_path']) ?></span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Relative path</span>
+                  <span class="detail-value mono"><?= h($f['relative_path']) ?></span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">mtime</span>
+                  <span class="detail-value"><?= h($f['mtime']) ?></span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">ctime</span>
+                  <span class="detail-value"><?= h($f['ctime']) ?></span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">birth</span>
+                  <span class="detail-value"><?= h($f['birth_time']) ?></span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">detected_at</span>
+                  <span class="detail-value"><?= h($f['detected_at']) ?></span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Permissions</span>
+                  <span class="detail-value mono"><?= h($f['perms']) ?></span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Size</span>
+                  <span class="detail-value"><?= number_format((int)$f['file_size']) ?> B</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Group</span>
+                  <span class="detail-value"><?= h($f['group_name']) ?></span>
+                </div>
+                <?php if ($f['sha256']): ?>
+                <div class="detail-item" style="grid-column:1/-1">
+                  <span class="detail-label">SHA-256</span>
+                  <span class="detail-value mono"><?= h($f['sha256']) ?></span>
+                </div>
+                <?php endif; ?>
+                <?php if (!empty($f['action_note'])): ?>
+                <div class="detail-item" style="grid-column:1/-1">
+                  <span class="detail-label">Note</span>
+                  <span class="detail-value"><?= h($f['action_note']) ?></span>
+                </div>
+                <?php endif; ?>
+              </div>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
 
-</div>
+  </div><!-- .content -->
+</div><!-- .main -->
+</div><!-- .layout -->
+
 <script src="assets/js/scanner.js"></script>
 </body>
 </html>

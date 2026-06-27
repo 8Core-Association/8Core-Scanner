@@ -25,25 +25,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="hr">
 <head>
 <meta charset="utf-8">
-<title>8Core Scanner Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8Core Scanner – Login</title>
 <link rel="stylesheet" href="assets/css/scanner.css">
 </head>
 <body>
-<div class="login-wrap">
-    <div class="panel">
-        <h1>8Core Scanner</h1>
-        <p class="small">Prijava u sigurnosni dashboard</p>
+<div class="login-bg">
+  <div class="login-card">
 
-        <?php if ($error): ?>
-            <div class="notice error"><?= h($error) ?></div>
-        <?php endif; ?>
-
-        <form method="post">
-            <input type="text" name="username" placeholder="Username" autocomplete="username" required>
-            <input type="password" name="password" placeholder="Password" autocomplete="current-password" required>
-            <button type="submit">Login</button>
-        </form>
+    <div class="login-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="login-logo-text">
+        <div class="name">8Core Scanner</div>
+        <div class="sub">Security Dashboard v3</div>
+      </div>
     </div>
+
+    <h2>Prijava</h2>
+    <p class="login-desc">Sigurnosni panel za pregled nalaza.</p>
+
+    <?php if ($error): ?>
+      <div class="login-error"><?= h($error) ?></div>
+    <?php endif; ?>
+
+    <form method="post" autocomplete="on">
+      <div class="login-field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username"
+               placeholder="Unesite username"
+               autocomplete="username" required>
+      </div>
+      <div class="login-field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password"
+               placeholder="Unesite lozinku"
+               autocomplete="current-password" required>
+      </div>
+      <button class="login-btn" type="submit">Prijava</button>
+    </form>
+
+    <div class="login-footer">8Core &copy; <?= date('Y') ?></div>
+  </div>
 </div>
 </body>
 </html>

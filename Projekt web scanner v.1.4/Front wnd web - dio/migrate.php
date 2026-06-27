@@ -95,16 +95,33 @@ try {
 <html lang="hr">
 <head>
 <meta charset="utf-8">
-<title>8Core Scanner Migration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8Core Scanner – Migration</title>
 <link rel="stylesheet" href="assets/css/scanner.css">
 </head>
 <body>
-<div class="header"><h1>8Core Scanner Migration</h1><div class="meta">Database schema update</div></div>
-<div class="container">
-    <div class="notice ok">
-        <?php foreach ($messages as $m): ?><div><?= htmlspecialchars($m, ENT_QUOTES, 'UTF-8') ?></div><?php endforeach; ?>
+<div class="util-wrap">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+    <div style="width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     </div>
-    <p><a href="login.php">Login</a> | <a href="index.php">Dashboard</a> | <a href="debug.php">Debug</a></p>
+    <div>
+      <div style="font-size:15px;font-weight:700;color:var(--text);">8Core Scanner</div>
+      <div style="font-size:12px;color:var(--text-muted);">Database Migration</div>
+    </div>
+  </div>
+
+  <div class="panel notice ok" style="margin-bottom:16px;">
+    <?php foreach ($messages as $m): ?>
+      <div class="log-line"><?= htmlspecialchars($m, ENT_QUOTES, 'UTF-8') ?></div>
+    <?php endforeach; ?>
+  </div>
+
+  <div class="util-links">
+    <a href="login.php">Login</a>
+    <a href="index.php">Dashboard</a>
+    <a href="debug.php">Debug</a>
+  </div>
 </div>
 </body>
 </html>
