@@ -1,87 +1,158 @@
 <?php
 /**
- * Plaćena licenca
- * (c) 2026 Tomislav Galić <tomislav@8core.hr>
- * Web: https://8core.hr
- * Kontakt: info@8core.hr | Tel: +385 099 851 0717
- * Sva prava pridržana. Ovaj softver je vlasnički i zabranjeno ga je
- * distribuirati ili mijenjati bez izričitog dopuštenja autora.
+ * 8Core Scanner
+ * (c) 2026 Tomislav Galić / 8Core
  */
+
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/helpers.php';
-require_admin();
 
-$config = require __DIR__ . '/includes/config.php';
-define('SCAN_SCRIPT', $config['scan_script'] ?? '/root/ioc_scan.sh');
-define('SCAN_LOG',    $config['scan_log']    ?? '/root/ioc-scan-live.log');
+require_login();
 
-$status  = '';
-$isError = false;
+$user = current_user();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['confirm'] ?? '') === '1') {
-    if (!file_exists(SCAN_SCRIPT)) {
-        $status  = 'Skripta nije pronađena: ' . SCAN_SCRIPT;
-        $isError = true;
-    } elseif (!is_executable(SCAN_SCRIPT)) {
-        $status  = 'Skripta nije izvršiva. Pokreni: chmod +x ' . SCAN_SCRIPT;
-        $isError = true;
+$flash = $_SESSION['flash'] ?? '';
+unset($_SESSION['flash']);
+
+$error = '';
+
+/**
+ * Kreiraj queue tablicu ako ne postoji.
+ * Root worker će kasnije čitati PENDING zahtjeve.
+ */
+try {
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS scanner_scan_requests (
+            id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            requested_by VARCHAR(80) NOT NULL,
+            requested_role VARCHAR(20) NOT NULL,
+            target_type VARCHAR(30) NOT NULL DEFAULT 'account',
+            target_value VARCHAR(255) NOT NULL,
+            status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+            scan_id BIGINT UNSIGNED NULL,
+            requested_at DATETIME NOT NULL,
+            started_at DATETIME NULL,
+            finished_at DATETIME NULL,
+            note TEXT NULL,
+            INDEX(status),
+            INDEX(requested_by),
+            INDEX(target_type),
+            INDEX(target_value),
+            INDEX(requested_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+} catch (Throwable $e) {
+    $error = 'Ne mogu kreirati scanner_scan_requests: ' . $e->getMessage();
+}
+
+/**
+ * Account lista.
+ * Admin vidi sve accounte iz findings.
+ * User vidi samo svoj account.
+ */
+$accounts = [];
+
+try {
+    if (is_admin()) {
+        $accounts = $pdo->query("
+            SELECT DISTINCT account_name
+            FROM findings
+            WHERE account_name IS NOT NULL AND account_name != ''
+            ORDER BY account_name
+        ")->fetchAll(PDO::FETCH_COLUMN);
     } else {
-        $cmd = 'sudo ' . escapeshellarg(SCAN_SCRIPT) . ' > /dev/null 2>&1 &';
-        exec($cmd, $out, $ret);
-
-        if ($ret === 0 || $ret === 1) {
-            $status = 'Scan pokrenut u pozadini. Prati status na dashboard-u.';
-        } else {
-            $cmd2 = 'bash ' . escapeshellarg(SCAN_SCRIPT) . ' > /dev/null 2>&1 &';
-            exec($cmd2, $out2, $ret2);
-            if ($ret2 === 0) {
-                $status = 'Scan pokrenut (bez sudo). Prati status na dashboard-u.';
-            } else {
-                $status  = 'Scan nije mogao biti pokrenut. Provjeri sudo konfiguraciju.';
-                $isError = true;
-            }
+        if (!empty($user['account_name'])) {
+            $accounts = [$user['account_name']];
         }
     }
+} catch (Throwable $e) {
+    $accounts = [];
+}
 
-    if (!$isError) {
-        $_SESSION['flash'] = $status;
-        header('Location: index.php');
+/**
+ * Request scan.
+ */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['request_scan'] ?? '') === '1') {
+    $targetType = $_POST['target_type'] ?? 'account';
+    $targetValue = trim($_POST['target_value'] ?? '');
+
+    if (!is_admin()) {
+        $targetType = 'account';
+        $targetValue = $user['account_name'] ?? '';
+    }
+
+    if ($targetType === 'all' && !is_admin()) {
+        $error = 'Nemaš pravo pokrenuti globalni scan.';
+    } elseif ($targetType === 'custom_path' && !is_admin()) {
+        $error = 'Nemaš pravo pokrenuti custom path scan.';
+    } elseif ($targetType === 'account' && $targetValue === '') {
+        $error = 'Account nije odabran.';
+    } elseif ($targetType === 'account' && !is_admin() && $targetValue !== ($user['account_name'] ?? '')) {
+        $error = 'Ne možeš pokrenuti scan za tuđi account.';
+    } elseif ($targetType === 'custom_path' && strpos($targetValue, '/home/') !== 0) {
+        $error = 'Custom path mora početi sa /home/.';
+    } else {
+        $stmt = $pdo->prepare("
+            INSERT INTO scanner_scan_requests
+            (requested_by, requested_role, target_type, target_value, status, requested_at)
+            VALUES (?, ?, ?, ?, 'PENDING', NOW())
+        ");
+
+        $stmt->execute([
+            $user['username'],
+            $user['role'],
+            $targetType,
+            $targetType === 'all' ? '/home' : $targetValue
+        ]);
+
+        $_SESSION['flash'] = 'Scan zahtjev je dodan u queue. Root worker će ga izvršiti.';
+        header('Location: scan.php');
         exit;
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['stop'] ?? '') === '1') {
-    $scriptName = basename(SCAN_SCRIPT);
-    exec('sudo pkill -f ' . escapeshellarg($scriptName) . ' 2>&1', $killOut, $killRet);
-    if ($killRet === 0) {
-        $_SESSION['flash'] = 'Scan zaustavljen.';
-    } else {
-        $_SESSION['flash'] = 'Scan nije bio aktivan ili zaustavljanje nije uspjelo.';
-    }
-    header('Location: scan.php');
-    exit;
-}
-
-// Prikaz zadnjih redaka loga
-$logLines = [];
-if (file_exists(SCAN_LOG) && is_readable(SCAN_LOG)) {
-    $all = file(SCAN_LOG, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $logLines = array_slice($all, -40);
-}
-
-// Je li scan aktivan — traži samo root-owned proces (sudo), ne www-data PHP procese
-$scanRunning = false;
-exec('pgrep -u root -f ' . escapeshellarg(SCAN_SCRIPT) . ' 2>/dev/null', $pids, $pgrepRet);
-$scanRunning = !empty(array_filter($pids));
-
-// Flash poruka
-$flash = $_SESSION['flash'] ?? '';
-unset($_SESSION['flash']);
-
+/**
+ * Zadnji scan.
+ */
 $lastScan = null;
+
 try {
-    $lastScan = $pdo->query("SELECT * FROM scans ORDER BY id DESC LIMIT 1")->fetch();
+    $lastScan = $pdo->query("
+        SELECT *
+        FROM scans
+        ORDER BY id DESC
+        LIMIT 1
+    ")->fetch();
 } catch (Throwable $e) {}
+
+/**
+ * Zadnji zahtjevi.
+ */
+$requests = [];
+
+try {
+    if (is_admin()) {
+        $requests = $pdo->query("
+            SELECT *
+            FROM scanner_scan_requests
+            ORDER BY id DESC
+            LIMIT 20
+        ")->fetchAll();
+    } else {
+        $stmt = $pdo->prepare("
+            SELECT *
+            FROM scanner_scan_requests
+            WHERE requested_by = ?
+            ORDER BY id DESC
+            LIMIT 20
+        ");
+        $stmt->execute([$user['username']]);
+        $requests = $stmt->fetchAll();
+    }
+} catch (Throwable $e) {
+    $requests = [];
+}
+
 ?>
 <!doctype html>
 <html lang="hr">
@@ -92,141 +163,189 @@ try {
 <link rel="stylesheet" href="assets/css/scanner.css">
 </head>
 <body>
-<div class="layout">
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-mark">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
-      <span class="logo-text">8Core Scanner</span>
-    </div>
-    <div class="logo-version">IOC Scanner v1.5</div>
-  </div>
-
-  <nav class="sidebar-nav">
-    <div class="sidebar-section-label">Menu</div>
-    <a class="sidebar-link" href="index.php">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </a>
-    <a class="sidebar-link active" href="scan.php">
-      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Pokreni scan
-    </a>
-    <a class="sidebar-link" href="admin/index.php">
-      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Admin panel
-    </a>
-  </nav>
-
-  <div class="sidebar-footer">
-    <div class="sidebar-user">
-      <div class="avatar"><?= h(mb_substr(current_user()['username'], 0, 1)) ?></div>
-      <div class="user-info">
-        <div class="user-name"><?= h(current_user()['username']) ?></div>
-        <div class="user-role">admin</div>
-      </div>
-    </div>
-  </div>
-</aside>
-
-<!-- MAIN -->
-<div class="main">
-  <div class="topbar">
-    <div class="topbar-title">Pokreni scan</div>
-    <div class="topbar-meta">
-      <?php if ($lastScan): ?>
-        <span class="scan-dot <?= $lastScan['status'] === 'RUNNING' ? 'running' : '' ?>"></span>
-        Zadnji scan: <?= h($lastScan['started_at']) ?>
-        &nbsp;&middot;&nbsp; <?= h($lastScan['status']) ?>
-      <?php else: ?>
-        <span class="scan-dot" style="background:#94a3b8"></span>
-        Nema podataka o scanu
-      <?php endif; ?>
-      &nbsp;&nbsp;
-      <a href="logout.php" style="color:var(--text-muted);font-size:12px;">Odjava</a>
-    </div>
-  </div>
-
-  <div class="content">
-
-    <?php if ($flash): ?>
-      <div class="notice ok"><?= h($flash) ?></div>
-    <?php endif; ?>
-
-    <?php if ($status && $isError): ?>
-      <div class="notice"><?= h($status) ?></div>
-    <?php endif; ?>
-
-    <!-- TRIGGER PANEL -->
-    <div class="panel">
-      <h2>Manualni scan</h2>
-      <p style="font-size:13px;color:var(--text-muted);margin:0 0 16px;">
-        Pokreće <code class="rule-pattern"><?= h(SCAN_SCRIPT) ?></code>
-        asinhrono u pozadini. Potrebno: <strong>sudo</strong> za web korisnika ili executable bit na skripti.
-      </p>
-
-      <div class="scan-sudo-hint">
-        <b class="scan-sudo-hint-title">Postavljanje sudo permisije (jednom, kao root):</b>
-        <code class="scan-sudo-cmd">
-          echo "www-data ALL=(root) NOPASSWD: <?= h(SCAN_SCRIPT) ?>" &gt;&gt; /etc/sudoers.d/scanner
-        </code>
-      </div>
-
-      <div class="scan-action-row">
-        <?php if ($scanRunning): ?>
-          <div class="scan-running-indicator">
-            <span class="scan-dot running"></span>
-            Scan je aktivan...
-          </div>
-          <form method="post">
-            <input type="hidden" name="stop" value="1">
-            <button type="submit" class="btn btn-danger"
-                    onclick="return confirm('Zaustaviti aktivni scan?')">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-              Stop scan
-            </button>
-          </form>
-        <?php else: ?>
-          <form method="post">
-            <input type="hidden" name="confirm" value="1">
-            <button type="submit" class="btn btn-primary"
-                    onclick="return confirm('Pokrenuti manualni IOC scan sada?')">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Pokreni scan
-            </button>
-            <a href="index.php" class="btn btn-ghost" style="margin-left:8px;">Odustani</a>
-          </form>
+<div class="header">
+    <h1>Pokreni scan</h1>
+    <div class="meta">
+        Logged in: <?= h($user['username']) ?> / <?= h($user['role']) ?>
+        <?php if (!is_admin()): ?>
+            / account: <?= h($user['account_name']) ?>
         <?php endif; ?>
-      </div>
     </div>
+</div>
 
-    <!-- LIVE LOG -->
-    <?php if (!empty($logLines)): ?>
-    <div class="panel">
-      <h2>Zadnjih 40 linija loga</h2>
-      <div style="background:var(--bg);border-radius:8px;padding:14px 16px;overflow-x:auto;max-height:420px;overflow-y:auto;">
-        <?php foreach ($logLines as $line): ?>
-          <div style="font-family:monospace;font-size:12px;color:#94a3b8;line-height:1.7;white-space:pre;">
-            <?= h($line) ?>
-          </div>
-        <?php endforeach; ?>
-      </div>
-      <div style="margin-top:8px;font-size:11px;color:var(--text-muted);">
-        Log: <?= h(SCAN_LOG) ?>
-      </div>
-    </div>
-    <?php else: ?>
-    <div class="panel" style="color:var(--text-muted);font-size:13px;">
-      Log fajl nije dostupan ili je prazan: <code><?= h(SCAN_LOG) ?></code>
-    </div>
+<div class="nav">
+    <a href="index.php">Dashboard</a>
+    <a href="scan.php">Pokreni scan</a>
+    <?php if (is_admin()): ?>
+        <a href="admin/users.php">Users</a>
     <?php endif; ?>
+    <a href="logout.php">Logout</a>
+</div>
 
-  </div><!-- .content -->
-</div><!-- .main -->
-</div><!-- .layout -->
+<div class="container">
+
+<?php if ($flash): ?>
+    <div class="notice ok"><?= h($flash) ?></div>
+<?php endif; ?>
+
+<?php if ($error): ?>
+    <div class="notice error"><?= h($error) ?></div>
+<?php endif; ?>
+
+<div class="panel">
+    <h2>Manualni scan</h2>
+
+    <p class="small">
+        Ova stranica ne pokreće root skriptu direktno. Samo dodaje scan zahtjev u bazu.
+        Root worker kasnije izvršava zahtjev.
+    </p>
+
+    <form method="post">
+        <input type="hidden" name="request_scan" value="1">
+
+        <?php if (is_admin()): ?>
+
+            <label>Target</label><br>
+
+            <select name="target_type" id="target_type">
+                <option value="account">Jedan account</option>
+                <option value="all">Svi accounti</option>
+                <option value="custom_path">Custom path</option>
+            </select>
+
+            <br><br>
+
+            <select name="target_value" id="account_select">
+                <?php foreach ($accounts as $acc): ?>
+                    <option value="<?= h($acc) ?>"><?= h($acc) ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <input type="text"
+                   name="target_value_custom"
+                   id="custom_path"
+                   placeholder="/home/account/public_html"
+                   style="display:none;">
+
+            <script>
+            document.getElementById('target_type').addEventListener('change', function () {
+                var type = this.value;
+                var acc = document.getElementById('account_select');
+                var custom = document.getElementById('custom_path');
+
+                if (type === 'custom_path') {
+                    acc.style.display = 'none';
+                    custom.style.display = 'inline-block';
+                    custom.name = 'target_value';
+                    acc.name = 'target_value_disabled';
+                } else if (type === 'all') {
+                    acc.style.display = 'none';
+                    custom.style.display = 'none';
+                    acc.name = 'target_value_disabled';
+                    custom.name = 'target_value_disabled';
+                } else {
+                    acc.style.display = 'inline-block';
+                    custom.style.display = 'none';
+                    acc.name = 'target_value';
+                    custom.name = 'target_value_disabled';
+                }
+            });
+            </script>
+
+        <?php else: ?>
+
+            <input type="hidden" name="target_type" value="account">
+            <input type="hidden" name="target_value" value="<?= h($user['account_name']) ?>">
+
+            <div class="notice ok">
+                Scan će biti pokrenut samo za tvoj account:
+                <strong><?= h($user['account_name']) ?></strong>
+            </div>
+
+        <?php endif; ?>
+
+        <br><br>
+
+        <button type="submit"
+                onclick="return confirm('Dodati scan zahtjev u queue?')">
+            Pokreni scan
+        </button>
+    </form>
+</div>
+
+<div class="panel">
+    <h2>Zadnji scan</h2>
+
+    <?php if ($lastScan): ?>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Started</th>
+                <th>Finished</th>
+                <th>Base</th>
+                <th>Findings</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td><?= h($lastScan['id']) ?></td>
+                <td><?= h($lastScan['started_at']) ?></td>
+                <td><?= h($lastScan['finished_at']) ?></td>
+                <td><?= h($lastScan['base_path']) ?></td>
+                <td><?= h($lastScan['files_found']) ?></td>
+                <td><?= h($lastScan['status']) ?></td>
+            </tr>
+        </table>
+    <?php else: ?>
+        <p class="small">Nema podataka o scanu.</p>
+    <?php endif; ?>
+</div>
+
+<div class="panel">
+    <h2>Scan queue</h2>
+
+    <?php if ($requests): ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>By</th>
+                    <th>Target</th>
+                    <th>Status</th>
+                    <th>Requested</th>
+                    <th>Started</th>
+                    <th>Finished</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($requests as $r): ?>
+                <tr>
+                    <td><?= h($r['id']) ?></td>
+                    <td><?= h($r['requested_by']) ?></td>
+                    <td>
+                        <?= h($r['target_type']) ?><br>
+                        <span class="small"><?= h($r['target_value']) ?></span>
+                    </td>
+                    <td>
+                        <span class="status-pill <?= h(action_class(strtolower($r['status']))) ?>">
+                            <?= h($r['status']) ?>
+                        </span>
+                    </td>
+                    <td><?= h($r['requested_at']) ?></td>
+                    <td><?= h($r['started_at']) ?></td>
+                    <td><?= h($r['finished_at']) ?></td>
+                    <td><?= h($r['note']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p class="small">Nema scan zahtjeva.</p>
+    <?php endif; ?>
+</div>
+
+</div>
+
 </body>
 </html>
