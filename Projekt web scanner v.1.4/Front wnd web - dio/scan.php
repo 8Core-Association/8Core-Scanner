@@ -26,15 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['confirm'] ?? '') === '1') 
         $status  = 'Skripta nije izvršiva. Pokreni: chmod +x ' . SCAN_SCRIPT;
         $isError = true;
     } else {
-        // Pokreni skriptu asinhrono — web server mora imati sudo za ovu skriptu
-        // Dodaj u /etc/sudoers: www-data ALL=(root) NOPASSWD: /root/ioc_scan.sh
         $cmd = 'sudo ' . escapeshellarg(SCAN_SCRIPT) . ' > /dev/null 2>&1 &';
         exec($cmd, $out, $ret);
 
         if ($ret === 0 || $ret === 1) {
             $status = 'Scan pokrenut u pozadini. Prati status na dashboard-u.';
         } else {
-            // Fallback: pokušaj bez sudo (ako skripta ima setuid ili web user ima permisiju)
             $cmd2 = 'bash ' . escapeshellarg(SCAN_SCRIPT) . ' > /dev/null 2>&1 &';
             exec($cmd2, $out2, $ret2);
             if ($ret2 === 0) {
@@ -53,12 +50,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['confirm'] ?? '') === '1') 
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['stop'] ?? '') === '1') {
+    $scriptName = basename(SCAN_SCRIPT);
+    exec('sudo pkill -f ' . escapeshellarg($scriptName) . ' 2>&1', $killOut, $killRet);
+    if ($killRet === 0) {
+        $_SESSION['flash'] = 'Scan zaustavljen.';
+    } else {
+        $_SESSION['flash'] = 'Scan nije bio aktivan ili zaustavljanje nije uspjelo.';
+    }
+    header('Location: scan.php');
+    exit;
+}
+
 // Prikaz zadnjih redaka loga
 $logLines = [];
 if (file_exists(SCAN_LOG) && is_readable(SCAN_LOG)) {
     $all = file(SCAN_LOG, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $logLines = array_slice($all, -40);
 }
+
+// Je li scan aktivan — traži proces po imenu skripte
+$scanRunning = false;
+exec('pgrep -f ' . escapeshellarg(basename(SCAN_SCRIPT)) . ' 2>/dev/null', $pids);
+$scanRunning = !empty(array_filter($pids));
+
+// Flash poruka
+$flash = $_SESSION['flash'] ?? '';
+unset($_SESSION['flash']);
 
 $lastScan = null;
 try {
@@ -135,6 +153,10 @@ try {
 
   <div class="content">
 
+    <?php if ($flash): ?>
+      <div class="notice ok"><?= h($flash) ?></div>
+    <?php endif; ?>
+
     <?php if ($status && $isError): ?>
       <div class="notice"><?= h($status) ?></div>
     <?php endif; ?>
@@ -154,15 +176,32 @@ try {
         </code>
       </div>
 
-      <form method="post">
-        <input type="hidden" name="confirm" value="1">
-        <button type="submit" class="btn btn-primary"
-                onclick="return confirm('Pokrenuti manualni IOC scan sada?')">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Pokreni scan
-        </button>
-        <a href="index.php" class="btn btn-ghost" style="margin-left:8px;">Odustani</a>
-      </form>
+      <div class="scan-action-row">
+        <?php if ($scanRunning): ?>
+          <div class="scan-running-indicator">
+            <span class="scan-dot running"></span>
+            Scan je aktivan...
+          </div>
+          <form method="post">
+            <input type="hidden" name="stop" value="1">
+            <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('Zaustaviti aktivni scan?')">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              Stop scan
+            </button>
+          </form>
+        <?php else: ?>
+          <form method="post">
+            <input type="hidden" name="confirm" value="1">
+            <button type="submit" class="btn btn-primary"
+                    onclick="return confirm('Pokrenuti manualni IOC scan sada?')">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Pokreni scan
+            </button>
+            <a href="index.php" class="btn btn-ghost" style="margin-left:8px;">Odustani</a>
+          </form>
+        <?php endif; ?>
+      </div>
     </div>
 
     <!-- LIVE LOG -->

@@ -92,6 +92,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = 'Lozinka promijenjena.';
         }
     }
+
+    if ($formAction === 'delete') {
+        $id = (int)($_POST['id'] ?? 0);
+        $currentId = (int)(current_user()['id'] ?? 0);
+        if ($id > 0 && $id !== $currentId) {
+            $pdo->prepare("DELETE FROM scanner_user_accounts WHERE user_id = ?")->execute([$id]);
+            $pdo->prepare("DELETE FROM scanner_users WHERE id = ?")->execute([$id]);
+            $message = 'Korisnik obrisan.';
+        } elseif ($id === $currentId) {
+            $message = 'Ne možeš obrisati vlastiti račun.';
+            $messageType = 'error';
+        }
+    }
 }
 
 $users = $pdo->query("SELECT * FROM scanner_users ORDER BY id ASC")->fetchAll();
@@ -325,6 +338,14 @@ foreach ($rows as $r) {
                        style="padding:5px 8px;font-size:12px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);" required>
                 <button type="submit" class="btn btn-ghost btn-sm">Set pass</button>
               </form>
+              <?php if ((int)$u['id'] !== (int)(current_user()['id'] ?? 0)): ?>
+              <form method="post" class="inline-form"
+                    onsubmit="return confirm('Trajno obrisati korisnika <?= h(addslashes($u['username'])) ?>?')">
+                <input type="hidden" name="form_action" value="delete">
+                <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
+                <button type="submit" class="btn btn-danger btn-sm">Ukloni</button>
+              </form>
+              <?php endif; ?>
             </div>
           </td>
         </tr>
